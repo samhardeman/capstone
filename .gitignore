@@ -1,0 +1,6 @@
+.venv
+/input_images
+/output_images
+yolov5m.pt
+detection_log.csv
+__pycache__
