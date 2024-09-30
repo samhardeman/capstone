@@ -1,9 +1,73 @@
 import torch
 import cv2
 import pandas as pd
-from datetime import datetime
 import os
-from image_fetch import grabImages
+import requests
+import json
+from PIL import Image
+from io import BytesIO
+from datetime import datetime
+import time
+
+imageDumpFolder = "input_images"
+
+locations = [
+  "31st Ave. Parking Garage",
+  "Aqua Fria Apartments (76)",
+  "Camelback Hall (37)",
+  "Chaparral Hall (45)",
+  "Diamondback Apartments (50)",
+  "GCU Arena (38)",
+  "Juniper Hall (84)",
+  "Prescott Hall (36)",
+  "Roadrunner Appartments (28)",
+  "Student Union (29)",
+  "Technology Building (57)",
+  "Thunderground (11)",
+  "Turquoise Apartments (61)",
+  "Verde River Apartments (78)"
+]
+
+def getLocationImage(location):
+    response = json.loads(requests.get('https://mkt-api.gcu.edu/linecam/api/v1/images?includeImages=true&includeInactive=false&location=' + location).text)
+    for camera in response:
+        print(f"{camera['description']}  ID: {camera['id']}  Time: {camera['updated_at']}")
+
+        timeString = datetime.datetime.strptime(camera['updated_at'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y%m%d-%H%M%S")
+
+        imageName = f"{camera['id']}_{camera['description']}_{timeString}.jpg"
+        saveStructure = f"./{imageDumpFolder}/"
+
+        try:
+            image = Image.open(BytesIO(requests.get(camera['url']).content))
+        except:
+            print(f"Unable to open image of {camera['description']}")
+            
+        if not os.path.exists(saveStructure):
+            os.makedirs(saveStructure)
+
+        try:
+          image.save(os.path.join(saveStructure, imageName))
+        except:
+          print(f"Unable to save image of {camera['description']}")
+    
+
+def grabImages():
+    imagesWritten = 0
+
+    for location in locations:
+        getLocationImage(location)
+
+    print(f"Success! Images Written: {imagesWritten}")
+
+
+
+# Define which images need to be grabbed
+
+# Grab image
+    # Count the people
+    # write the data with the timestamp of the photo
+    # next image
 
 grabImages()
 
