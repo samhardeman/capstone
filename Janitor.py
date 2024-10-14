@@ -3,7 +3,7 @@ import os
 from datetime import datetime
 
 # Initialize TinyDB
-db = TinyDB('db.json')
+db = TinyDB('./database/db.json')
 
 def delete_old_records():
     # Get the current Unix timestamp
