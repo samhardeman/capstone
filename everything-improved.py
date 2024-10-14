@@ -28,12 +28,17 @@ locations = [
   "Verde River Apartments (78)"
 ]
 
+# Log file setup
+log_file = 'camera_log.csv'
+log_columns = ['id', 'Updated', 'Location']
+log_data = []
+
 def getLocationImage(location):
     response = json.loads(requests.get('https://mkt-api.gcu.edu/linecam/api/v1/images?includeImages=true&includeInactive=false&location=' + location).text)
     for camera in response:
         print(f"{camera['description']}  ID: {camera['id']}  Time: {camera['updated_at']}")
 
-        timeString = datetime.datetime.strptime(camera['updated_at'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y%m%d-%H%M%S")
+        timeString = datetime.strptime(camera['updated_at'], "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%Y%m%d-%H%M%S")
 
         imageName = f"{camera['id']}_{camera['description']}_{timeString}.jpg"
         saveStructure = f"./{imageDumpFolder}/"
@@ -50,6 +55,11 @@ def getLocationImage(location):
           image.save(os.path.join(saveStructure, imageName))
         except:
           print(f"Unable to save image of {camera['description']}")
+        
+        log_data.append([camera['id'], camera['updated_at'], camera['description']])
+    
+    log_df = pd.DataFrame(log_data, columns=log_columns)
+    log_df.to_csv(log_file, index=False)
     
 
 def grabImages():
