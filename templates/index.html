@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>People Count by Location</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            position: relative; /* Allows us to position the image relative to the table cell */
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        /* CSS for image hover */
+        .location-row {
+            position: relative;
+        }
+        .location-row img {
+            display: none;
+            position: absolute;
+            top: 50%; /* Center the image vertically */
+            left: 50%; /* Position the image to the right of the location name */
+            transform: translateY(-50%); /* Adjust for vertical centering */
+            margin-left: 10px; /* Add space between the text and the image */
+            max-width: 250px; /* Limit the size of the preview image */
+            max-height: 200px; /* Keep the height limited for thumbnails */
+            border: 1px solid #ddd;
+            background-color: white;
+            z-index: 10; /* Ensure the image appears above other content */
+        }
+        .location-row:hover img {
+            display: block;
+        }
+        .dot {
+            width: 15px; /* Width of the dot */
+            height: 15px; /* Height of the dot */
+            border-radius: 50%; /* Make it circular */
+            display: inline-block; /* Display as inline block */
+            margin-right: 10px; /* Space between the dot and the number of people */
+        }
+        .sort-options {
+            margin-bottom: 10px; /* Space between dropdown and table */
+        }
+    </style>
+</head>
+<body>
+    <h1>People Count by Location</h1>
+    
+    <!-- Dropdown for sorting options -->
+    <div class="sort-options">
+        <label for="sort">Sort by: </label>
+        <select id="sort" name="sort" onchange="sortLocations()">
+            <option value="most_busy" {% if request.args.get('sort') == 'most_busy' %}selected{% endif %}>Most Busy</option>
+            <option value="least_busy" {% if request.args.get('sort') == 'least_busy' %}selected{% endif %}>Least Busy</option>        </select>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Location</th>
+                <th>Number of People</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for location, data in locations %}
+            <tr class="location-row">
+                <td>{{ location }}
+                    <img src="{{ data['imagePath'] }}" alt="Image for {{ location }}">
+                </td>
+                <td>
+                    <span class="dot" style="background-color: {{ data['color'] }};"></span>
+                    {{ data['numPeople'] }}
+                </td>
+                <td>{{ data['humanTime'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script>
+        function sortLocations() {
+            const sortOption = document.getElementById('sort').value;
+            window.location.href = `/?sort=${sortOption}`;
+        }
+    </script>
+</body>
+</html>
