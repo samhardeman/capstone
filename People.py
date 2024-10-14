@@ -9,14 +9,14 @@ def loadModel() :
     model = torch.hub.load('ultralytics/yolov5', 'yolov5m')  # Use yolov5m instead of yolov5s for better accuracy
     return model
 
-def detect(image_file, model, output_path, threshold):
+def detect(image_path, model, output_path, threshold):
     
     confidence_threshold = threshold  # Increased confidence threshold for better accuracy
-    # Read the image
-    image = cv2.imread(image_file)
+    
+    image = cv2.imread(image_path)
     if image is None:
-        print(f"Error: Could not open image {image_file}")
-        exit
+        print(f"Error: Could not open image")
+        exit()  
 
     # Perform object detection
     results = model(image)
@@ -43,12 +43,5 @@ def detect(image_file, model, output_path, threshold):
     # Print the number of people detected in the image
     print(f"Detected {people_count} people.")
 
-    # Log detected person
-    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     
-    # Save annotated image
-    output_image_path = os.path.join(output_path, image_file)
-    cv2.imwrite(output_image_path, image)
-    print(f"Annotated image saved to {output_image_path}")
-    
-    return people_count
+    return people_count, image
