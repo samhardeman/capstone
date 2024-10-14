@@ -5,3 +5,4 @@ yolov5m.pt
 detection_log.csv
 __pycache__
 /static
+db.json
