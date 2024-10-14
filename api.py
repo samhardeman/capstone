@@ -4,7 +4,7 @@ from CountPeople import peopleDetectAndDB, db
 import threading
 import time
 from datetime import datetime
-from dbMan import delete_old_records
+from Janitor import delete_old_records
 
 app = Flask(__name__)
 
