@@ -15,10 +15,6 @@ def delete_old_records():
     # Query object for TinyDB
     Records = Query()
     
-    # Remove records older than one hour
-    oldRecords = db.search(Records.timestamp < cutoff_time)
-    for oldRecord in oldRecords:
-        os.remove(oldRecord['imagePath'])
-        
+    # Remove old records        
     db.remove(Records.timestamp < cutoff_time)
     print(f"Deleted records older than one hour.")

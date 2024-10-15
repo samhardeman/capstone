@@ -63,7 +63,7 @@ def peopleDetectAndDB():
             unixTime = int(datetime.fromisoformat(camera['updated_at'].replace("Z", "+00:00")).timestamp())
             
             # Define image name and path to save in input_images folder
-            imageName = f"{camera['id']}_{camera['description']}_{timeString}.jpg"
+            imageName = f"{camera['id']}_{camera['description']}.jpg"
             input_image_path = os.path.join(input_images_path, imageName)
             
             try: 
